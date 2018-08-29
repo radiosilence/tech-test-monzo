@@ -6,8 +6,11 @@ export const getAuthToken = (state: RootState) => getAuthState(state).token
 
 export const getAuthExpiry = (state: RootState) => getAuthState(state).expiry
 
+export const getAuthInitialized = (state: RootState) =>
+    getAuthState(state).initialized
+
 export const getAuthenticated = (state: RootState) =>
-    (getAuthExpiry(state) || 0) > Date.now() / 1000
+    getAuthInitialized(state) && (getAuthExpiry(state) || 0) > Date.now() / 1000
 
 export const getEmail = (state: RootState) => getAuthState(state).email
 

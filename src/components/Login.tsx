@@ -14,21 +14,32 @@ export interface LoginComponentProps extends LoginProps {
 export class LoginComponent extends React.Component<LoginComponentProps> {
     public render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <input
-                    type="email"
-                    onChange={this.handleChangeEmail}
-                    placeholder="Email"
-                    value={this.props.form.email}
-                />
-                <input
-                    type="password"
-                    onChange={this.handleChangePassword}
-                    placeholder="Password"
-                    value={this.props.form.password}
-                />
-                <input type="submit" />
-            </form>
+            <main>
+                <div className="container">
+                    <h1>login</h1>
+                    <form onSubmit={this.handleSubmit}>
+                        <p>
+                            <input
+                                type="email"
+                                onChange={this.handleChangeEmail}
+                                placeholder="Email"
+                                value={this.props.form.email}
+                            />
+                        </p>
+                        <p>
+                            <input
+                                type="password"
+                                onChange={this.handleChangePassword}
+                                placeholder="Password"
+                                value={this.props.form.password}
+                            />
+                        </p>
+                        <p>
+                            <button onClick={this.handleSubmit}>login</button>
+                        </p>
+                    </form>
+                </div>
+            </main>
         )
     }
 
@@ -53,7 +64,11 @@ export class LoginComponent extends React.Component<LoginComponentProps> {
         })
     }
 
-    private handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    private handleSubmit = (
+        event:
+            | React.FormEvent<HTMLFormElement>
+            | React.MouseEvent<HTMLButtonElement>,
+    ) => {
         event.preventDefault()
         const { email, password } = this.props.form
         this.props.authLogin(email, password)

@@ -4,6 +4,7 @@ import {
     AUTH_AUTHENTICATED,
     AUTH_LOGOUT,
     AUTH_UPDATE_FORM,
+    AUTH_INITIALIZE,
 } from '../actions'
 
 const initialState = {
@@ -25,8 +26,16 @@ export default (state: AuthState = initialState, action: AuthAction) => {
                 expiry: action.expiry,
                 token: action.token,
             }
+        case AUTH_INITIALIZE:
+            return {
+                ...state,
+                initialized: true,
+            }
         case AUTH_LOGOUT:
-            return initialState
+            return {
+                ...initialState,
+                initialized: true,
+            }
         case AUTH_UPDATE_FORM:
             return {
                 ...state,

@@ -1,3 +1,4 @@
 import { combineEpics } from 'redux-observable'
-import { handleDeauthedEpic, handleLoginSuccessEpic } from './auth'
-export default combineEpics(handleDeauthedEpic, handleLoginSuccessEpic)
+import { appsEpics } from './apps'
+import { authEpics } from './auth'
+export default combineEpics(appsEpics, authEpics)
