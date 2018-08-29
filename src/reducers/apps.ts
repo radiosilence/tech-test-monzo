@@ -1,5 +1,5 @@
 import { AppsState } from '../interfaces'
-import { AppsAction, APPS_FETCH } from '../actions'
+import { AppsAction, APPS_SET } from '../actions'
 
 const initialState = {
     apps: {},
@@ -7,7 +7,7 @@ const initialState = {
 
 export default (state: AppsState = initialState, action: AppsAction) => {
     switch (action.type) {
-        case APPS_FETCH.SUCCESS:
+        case APPS_SET:
             return {
                 ...state,
                 apps: action.apps,

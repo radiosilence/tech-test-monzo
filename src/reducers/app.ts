@@ -25,4 +25,5 @@ export default (state: AppState = initialState, action: AppAction) => {
                 },
             }
     }
+    return state
 }

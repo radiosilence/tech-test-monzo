@@ -29,7 +29,7 @@ export interface AuthUpdateFormAction {
 }
 
 export const authLogin = (email: string, password: string) =>
-    rxHttpPost('/login', AUTH_LOGIN, { email, password, expiry: '10s' })
+    rxHttpPost('/login', AUTH_LOGIN, { email, password })
 
 export const authAuthenticated = (
     token: string,

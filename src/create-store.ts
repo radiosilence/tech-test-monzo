@@ -10,7 +10,7 @@ import { getAuthToken } from './selectors'
 const rxHttpEpic = createRxHttpEpic((state: RootState) => ({
     baseUrl: 'https://guarded-thicket-22918.herokuapp.com',
     headers: {
-        authorization: `Authorization ${getAuthToken(state)}`,
+        authorization: `${getAuthToken(state)}`,
         'content-type': 'application/json',
     },
 }))

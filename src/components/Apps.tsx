@@ -3,11 +3,17 @@ import { connect } from 'react-redux'
 import { RootState } from '../interfaces'
 
 import { appsFetch } from '../actions'
-import { getLoading } from '../selectors'
+import { getLoading, getAppIds } from '../selectors'
+import { Loader } from './Loader'
+import { AppRow } from './AppRow'
+
+import './Apps.css'
 
 export interface AppsProps {}
 export interface AppsComponentProps extends AppsProps {
     appsFetch: () => void
+    loading: boolean
+    appIds: string[]
 }
 
 class AppsComponent extends React.Component<AppsComponentProps> {
@@ -15,12 +21,19 @@ class AppsComponent extends React.Component<AppsComponentProps> {
         this.props.appsFetch()
     }
     public render() {
-        return <div>a list of apps</div>
+        return this.props.loading ? (
+            <Loader />
+        ) : (
+            <ol className="apps">
+                {this.props.appIds.map((id) => <AppRow key={id} id={id} />)}
+            </ol>
+        )
     }
 }
 
 export const mapStateToProps = (state: RootState) => ({
     loading: getLoading(state, 'apps'),
+    appIds: getAppIds(state),
 })
 
 export const mapDispatchToProps = {
