@@ -1,20 +1,32 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { setVisible } from '../actions'
+import {
+    setVisible,
+    appStartUpdating,
+    appCancelUpdating,
+    appPatchBuffer,
+    appSave,
+} from '../actions'
 import { RootState, AppModel } from '../interfaces'
 
-import { getApp, getVisible } from '../selectors'
+import { getApp, getVisible, getAppBuffer, getLoading } from '../selectors'
 
 import './AppRow.css'
+import { AppUsers } from './AppUsers'
 
 export interface AppRowProps {
     id: string
 }
 export interface AppRowComponentProps extends AppRowProps {
     app: AppModel
-    editing: boolean
+    buffer?: AppModel
     expanded: boolean
+    saving: boolean
     setVisible: (a: string, b: boolean) => void
+    appStartUpdating: (a: string) => void
+    appPatchBuffer: (a: string, b: Partial<AppModel>) => void
+    appCancelUpdating: (a: string) => void
+    appSave: (a: string, b: AppModel) => void
 }
 
 class AppRowComponent extends React.Component<AppRowComponentProps> {
@@ -39,17 +51,27 @@ class AppRowComponent extends React.Component<AppRowComponentProps> {
     }
 
     private appName() {
-        return this.props.editing ? (
-            <input type="text" value={this.props.app.name} />
+        return this.props.buffer ? (
+            <input
+                type="text"
+                onChange={this.handleAppChangeName}
+                value={this.props.buffer.name}
+            />
         ) : (
             this.props.app.name
         )
     }
     private appEdit() {
-        return this.props.editing ? (
+        const { saving, buffer } = this.props
+        return buffer ? (
             <span>
-                <button>Save</button>{' '}
-                <button className="cancel" onClick={this.handleCancelEdit}>
+                <button disabled={saving} onClick={this.handleSave}>
+                    Save
+                </button>{' '}
+                <button
+                    disabled={saving}
+                    className="cancel"
+                    onClick={this.handleCancelEdit}>
                     Cancel
                 </button>
             </span>
@@ -67,34 +89,51 @@ class AppRowComponent extends React.Component<AppRowComponentProps> {
 
     private users() {
         if (this.props.expanded) {
-            return <div>users</div>
+            return <AppUsers id={this.props.id} />
         }
         return undefined
     }
 
     private handleAppEdit = () => {
-        this.props.setVisible(`app:${this.props.id}:editing`, true)
+        this.props.appStartUpdating(this.props.id)
+    }
+    private handleAppChangeName = (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        this.props.appPatchBuffer(this.props.id, {
+            name: event.currentTarget.value,
+        })
     }
     private handleCancelEdit = () => {
-        this.props.setVisible(`app:${this.props.id}:editing`, false)
+        this.props.appCancelUpdating(this.props.id)
     }
     private handleExpand = () => {
-        this.props.setVisible(`app:${this.props.id}:expanded`, true)
+        this.props.setVisible(`app:${this.props.id}`, true)
     }
     private handleCollapse = () => {
-        this.props.setVisible(`app:${this.props.id}:expanded`, false)
+        this.props.setVisible(`app:${this.props.id}`, false)
+    }
+
+    private handleSave = () => {
+        const { appSave, buffer, id } = this.props
+        if (buffer !== undefined) appSave(id, buffer)
     }
 }
 
 export const mapStateToProps = (state: RootState, ownProps: AppRowProps) => ({
     ...ownProps,
     app: getApp(state, ownProps.id),
-    editing: getVisible(state, `app:${ownProps.id}:editing`),
-    expanded: getVisible(state, `app:${ownProps.id}:expanded`),
+    buffer: getAppBuffer(state, ownProps.id),
+    expanded: getVisible(state, `app:${ownProps.id}`),
+    saving: getLoading(state, `app:${ownProps.id}`),
 })
 
 export const mapDispatchToProps = {
     setVisible,
+    appStartUpdating,
+    appCancelUpdating,
+    appPatchBuffer,
+    appSave,
 }
 
 export const AppRow = connect(mapStateToProps, mapDispatchToProps)(

@@ -13,3 +13,9 @@ export const getAppIds = createSelector(
 
 export const getApp = (state: RootState, id: string) =>
     getAppsState(state).apps[id]
+
+export const getAppUsers = (state: RootState, id: string) =>
+    getAppsState(state).users[id] || []
+
+export const getAppBuffer = (state: RootState, id: string) =>
+    getAppsState(state).appBuffers[id]
